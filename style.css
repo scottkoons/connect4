@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    align-items: center;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    padding: 25px;
+    width: 100%;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+/* Grid Container */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(7, 100px);
+    grid-template-rows: repeat(7, 100px);
+    grid-gap: 3px;
+    height: 700px;
+    margin: 10px 0 25px;
+    width: 700px;
+}
+
+/* Cell Style */
+.cell {
+    align-items: center;
+    background: #fffeef;
+    border: 1px solid #aaa;
+    display: flex;
+    justify-content: center;
+}
+
+.cell::after {
+    background: white;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+    content: '';
+    cursor: pointer;
+    height: 75px;
+    width: 75px;
+}
+
+.row-top {
+    background: white;
+    border: 1px dashed #ccc;
+}
+
+.row-top::after {
+    border: 1px solid #ccc;
+}
+
+/* ------------ Control cell colors ------------ */
+.cell:not(.row-top).red::after {
+    background: #A2565C;
+}
+
+.cell:not(.row-top).blue::after {
+    background: #527CF1;
+}
+
+.cell:not(.row-top).red.win {
+    background: #A2565C;
+}
+
+.cell:not(.row-top).blue.win {
+    background: #527CF1;
+}
+
+.cell.row-top {
+    background: white;
+}
+
+.cell.row-top::after {
+    border: none;
+}
+
+.cell.row-top.red::after {
+    background: #A2565C;
+}
+
+.cell.row-top.blue::after {
+    background: #527CF1;
+}
+
+/* ------------ End control cell colors ------------ */
+
+/* Supporting Styles */
+.footer {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+}
+
+.reset {
+    background-color: #4370F1;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px 30px;
+    text-transform: uppercase;
+}
+
+.reset:hover {
+    background-color: #1D50F1;
+}
+
+.reset:active {
+    background-color: #4d7ef1;
+
+}
+
+.status {
+    display: block;
+    font-size: 20px;
+}
