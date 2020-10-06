@@ -178,6 +178,24 @@ const getFirstOpenCellForCol = (colIdx) => {
   return null;
 };
 
+// Check array of winningCells to see if it is 4, if so, add the win class to HTML
+const checkWinningCells = (cells) => {
+  if (cells.length < 4) return false; // Returns false if there are not 4 in a row & you should continue checking for win
+
+  // If there are 4 winningCells then set gameIsLive to false & add the win class to the cells
+  gameIsLive = false;
+  for (const cell of cells) {
+    cell.classList.add("win");
+  }
+
+  // Updates status area to anounce the winning color
+  statusSpan.textContent = `SUCK IT ${blueIsNext ? "RED" : "BLUE"}, ${
+    blueIsNext ? "BLUE" : "RED"
+  } WINS!!!`;
+
+  return true; //
+};
+
 // Get the color of a cell
 const getColorOfCell = (cell) => {
   const cellActiveClasses = getClassListArray(cell);
@@ -192,15 +210,88 @@ const getColorOfCell = (cell) => {
   }
 };
 
-// Check game status
+// ----------- Check game status ------------
 const checkGameStatus = (cell) => {
   const color = getColorOfCell(cell);
   if (!color) return; // If getColorOfCell returns null, then just return & do nothing
+  const [rowIdx, colIdx] = getCellLocation(cell);
 
-  // Check for horizonal win
+  // ----------- Check for horizonal win -----------
+  let winningCells = [cell];
+  let rowToCheck = rowIdx; // Checks the row index
+
+  // Check cells to the left of the current cell
+  let colToCheck = colIdx - 1; // Checks col to the left of the current cell [rowIdx, colIdx]
+  // Loop to check cell to the left as long as the cell is on the game board
+  while (colToCheck >= 0) {
+    const cellToCheck = rows[rowToCheck][colToCheck]; // Gives us the cell associated with chip being checked
+    // If block that checks if the color of current cell equals the color of the previous cell
+    if (getColorOfCell(cellToCheck) === color) {
+      winningCells.push(cellToCheck); // Adds the current cell to the winningCell array
+      colToCheck--; // Decrements the colToCheck by 1 so it continues to look left
+    } else {
+      break; // If the cell to the left is not the same color or it is empty, then break out of the loop
+    }
+  }
+
+  // Check cells to the right of the current cell
+  colToCheck = colIdx + 1; // Checks col to the right of the current cell [rowIdx, colIdx]
+  // Loop to check cell to the right as long as the cell is on the game board
+  while (colToCheck <= 6) {
+    const cellToCheck = rows[rowToCheck][colToCheck]; // Gives us the cell associated with chip being checked
+    // If block that checks if the color of current cell equals the color of the previous cell
+    if (getColorOfCell(cellToCheck) === color) {
+      winningCells.push(cellToCheck); // Adds the current cell to the winningCell array
+      colToCheck++; // Increments the colToCheck by 1 so it continues to look right
+    } else {
+      break; // If the cell to the right is not the same color or it is empty, then break out of the loop
+    }
+  }
+  let isWinningCombo = checkWinningCells(winningCells);
+  if (isWinningCombo) return; // If it was a winning set of chips, then do nothing and return
+
+  // --------- END CHECK HORIZONTAL ----------
+
+  // ----------- Check for vertical win -----------
+  winningCells = [cell];
+  rowToCheck = rowIdx - 1; // Checks row above the current cell [rowIdx, colIdx]
+
+  // Check cells to the left of the current cell
+  colToCheck = colIdx; // Checks the col index
+  // Loop to check cell to the left as long as the cell is on the game board
+  while (rowToCheck >= 0) {
+    const cellToCheck = rows[rowToCheck][colToCheck]; // Gives us the cell associated with chip being checked
+    // If block that checks if the color of current cell equals the color of the previous cell
+    if (getColorOfCell(cellToCheck) === color) {
+      winningCells.push(cellToCheck); // Adds the current cell to the winningCell array
+      rowToCheck--; // Decrements the colToCheck by 1 so it continues to look left
+    } else {
+      break; // If the cell to the left is not the same color or it is empty, then break out of the loop
+    }
+  }
+
+  // Check cells to the right of the current cell
+  rowToCheck = rowIdx + 1; // Checks col to the right of the current cell [rowIdx, colIdx]
+  // Loop to check cell to the right as long as the cell is on the game board
+  while (rowToCheck <= 5) {
+    const cellToCheck = rows[rowToCheck][colToCheck]; // Gives us the cell associated with chip being checked
+    // If block that checks if the color of current cell equals the color of the previous cell
+    if (getColorOfCell(cellToCheck) === color) {
+      winningCells.push(cellToCheck); // Adds the current cell to the winningCell array
+      rowToCheck++; // Increments the colToCheck by 1 so it continues to look right
+    } else {
+      break; // If the cell to the right is not the same color or it is empty, then break out of the loop
+    }
+  }
+  isWinningCombo = checkWinningCells(winningCells);
+  if (isWinningCombo) return; // If it was a winning set of chips, then do nothing and return
+  // --------- END CHECK VERTICAL ----------
+
+  // Function checking if there are 4 cells of the same color
+  checkWinningCells(winningCells);
 };
-
 // ************ END Functions: General Utility ************
+//
 
 // ***************************************************
 // ---------- Functions: Event handlers --------------
@@ -208,6 +299,7 @@ const checkGameStatus = (cell) => {
 
 // Executes whenever a mouseover event is detected in any of the cells
 const handleCellMouseOver = (e) => {
+  if (!gameIsLive) return; // Ir gameIsLive is false, then nothing happens and the function is simply returned
   const cell = e.target; // Gets the target value of each cell & sends that info to getCellLocation function
   const [rowIdx, colIdx] = getCellLocation(cell); // Destructure the row & col number array
   //   console.log(rowIdx, colIdx);
@@ -229,6 +321,7 @@ const handleCellMouseOut = (e) => {
 
 // Executes whenever a click event is detected in any of the cells
 const handleCellClick = (e) => {
+  if (!gameIsLive) return; // Ir gameIsLive is false, then nothing happens and the function is simply returned
   const cell = e.target; // Gets the target value of each cell & sends that info to getCellLocation function
   const [rowIdx, colIdx] = getCellLocation(cell); // Destructure the row & col number array
   const openCell = getFirstOpenCellForCol(colIdx);
@@ -242,9 +335,11 @@ const handleCellClick = (e) => {
 
   // Toggles players chip between blue & red
   const topCell = topCells[colIdx];
-  topCell.classList.toggle("blue");
-  topCell.classList.toggle("red");
-  blueIsNext ? (blueIsNext = false) : (blueIsNext = true); // Flips between blue being true & false
+  if (gameIsLive) {
+    topCell.classList.toggle("blue");
+    topCell.classList.toggle("red");
+    blueIsNext ? (blueIsNext = false) : (blueIsNext = true); // Flips between blue being true & false
+  }
 };
 // ************ END Functions: Event handlers ************
 
@@ -262,4 +357,22 @@ for (const row of rows) {
     cell.addEventListener("click", handleCellClick); // Listens for click event & then runs handleCellClick function
   }
 }
+
+// Reset button event listener to clear the board and reset game variable to initial setting
+resetButton.addEventListener("click", () => {
+  // Loops over every row array (which contains all of the individual row arrays)
+  for (const row of rows) {
+    // Now loops over each individual row array to get the cell
+    for (const cell of row) {
+      // Removes alll of the 'blue', 'red', & 'win' classes so the board is blannk
+      cell.classList.remove("blue");
+      cell.classList.remove("red");
+      cell.classList.remove("win");
+    }
+  }
+
+  gameIsLive = true; // Resets gameIsLive to its original true value
+  blueIsNext = true; // Resets blueIsNext to its original true value
+  statusSpan.textContent = ""; // Resets the statusSpan message back to an empty string
+});
 // ************ END Event Listeners ************

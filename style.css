@@ -60,10 +60,14 @@ h1 {
 /* ------------ Control cell colors ------------ */
 .cell:not(.row-top).red::after {
     background: #A2565C;
+    animation: fadeIn;
+    animation-duration: .2s;
 }
 
 .cell:not(.row-top).blue::after {
     background: #527CF1;
+    animation: fadeIn;
+    animation-duration: .2s;
 }
 
 .cell:not(.row-top).red.win {
@@ -84,10 +88,14 @@ h1 {
 
 .cell.row-top.red::after {
     background: #A2565C;
+    animation: fadeIn;
+    animation-duration: .2s;
 }
 
 .cell.row-top.blue::after {
     background: #527CF1;
+    animation: fadeIn;
+    animation-duration: .2s;
 }
 
 /* ------------ End control cell colors ------------ */
@@ -102,7 +110,7 @@ h1 {
 
 .reset {
     background-color: #4370F1;
-    border-radius: 5px;
+    border-radius: 3px;
     border: none;
     color: white;
     cursor: pointer;
