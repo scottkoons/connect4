@@ -406,7 +406,6 @@ const handleCellClick = (e) => {
   blueIsNext ? (blueIsNext = false) : (blueIsNext = true); // Flips between blue being true & false
   // Toggles players chip between blue & red
   if (gameIsLive) {
-    console.log(`gameIsLive is ${gameIsLive}`);
     const topCell = topCells[colIdx];
     topCell.classList.toggle("blue");
     topCell.classList.toggle("red");

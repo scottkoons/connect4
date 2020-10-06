@@ -53,9 +53,6 @@ h1 {
     border: 1px dashed #ccc;
 }
 
-.row-top::after {
-    border: 1px solid #ccc;
-}
 
 /* ------------ Control cell colors ------------ */
 .cell:not(.row-top).red::after {
@@ -76,10 +73,6 @@ h1 {
 
 .cell:not(.row-top).blue.win {
     background: #527CF1;
-}
-
-.cell.row-top {
-    background: white;
 }
 
 .cell.row-top::after {
@@ -133,4 +126,5 @@ h1 {
 .status {
     display: block;
     font-size: 20px;
+    text-transform: uppercase;
 }
